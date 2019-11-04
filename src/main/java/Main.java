@@ -1,11 +1,11 @@
 import de.westnordost.osmapi.OsmConnection;
 import de.westnordost.osmapi.map.MapDataDao;
-import hu.supercluster.overpasser.library.output.OutputModificator;
-import hu.supercluster.overpasser.library.output.OutputOrder;
-import hu.supercluster.overpasser.library.output.OutputVerbosity;
+import hu.supercluster.overpasser.library.query.OverpassFilterQuery;
 import hu.supercluster.overpasser.library.query.OverpassQuery;
 import lombok.val;
+import model.Bbox;
 import remote.OverpassServiceProvider;
+import remote.QueryService;
 
 import java.io.IOException;
 
@@ -14,25 +14,28 @@ import static hu.supercluster.overpasser.library.output.OutputFormat.JSON;
 public class Main {
 
     public static void main(String[] args) throws IOException {
+        val cracowBbox = Bbox.builder()
+                .southernLat(50.03575315324749)
+                .westernLon(19.90370750427246)
+                .northernLat(50.084958885657535)
+                .easternLon(19.994258880615234)
+                .build();
         val osm = new OsmConnection("https://api.openstreetmap.org/api/0.6/",
                 "my user agent", null);
         val mapDao = new MapDataDao(osm);
 
         val overpass = OverpassServiceProvider.get();
-        val query = new OverpassQuery().format(JSON)
-                .timeout(30)
-                .filterQuery()
-                .node()
-                .amenity("drinking_water")
-                .boundingBox(
-                        47.48047027491862, 19.039797484874725,
-                        47.51331674014172, 19.07404761761427
-                )
-                .end()
-                .output(OutputVerbosity.BODY, OutputModificator.CENTER, OutputOrder.QT, 100)
-                .build();
-        val result = overpass.interpreter(query).execute();
+        val queryService = new QueryService(overpass);
+        val result = queryService.execute(cracowBbox, Main::createQuery, 10);
 
         System.out.println(result);
+    }
+
+    private static OverpassFilterQuery createQuery() {
+        return new OverpassQuery().format(JSON)
+                .timeout(100000)
+                .filterQuery()
+                .way()
+                .tag("highway");
     }
 }
