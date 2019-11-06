@@ -52,6 +52,11 @@
             <artifactId>adapter-java8</artifactId>
             <version>2.6.1</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
     </dependencies>
 
 </project>
