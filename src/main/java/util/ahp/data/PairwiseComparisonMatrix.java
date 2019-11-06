@@ -7,6 +7,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Class stores pairwise comparisons to be used in AHP ranking creation. Class should be used as follows:
+ *  1. Create class:
+ *      PairwiseComparisonMatrix m = new PairwiseComparisonMatrix();
+ *  2. Add categories with preference using method "addNewComparisionBetweenCategories"
+ *      m.addNewComparisionBetweenCategories("a", "b", 2.0);    // that means a is 2 times more preferred than b
+ *                                                              // and b is 0.5 times less preferred than a
+ *                                                              // and a is as same preference as a
+ *                                                              // and b is as same preference as b
+ * User should care to provide as many elements to create complete matrix.
+ */
 public class PairwiseComparisonMatrix implements Cloneable {
 
     @Getter

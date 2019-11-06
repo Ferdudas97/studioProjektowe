@@ -3,6 +3,7 @@ package util.ahp;
 import lombok.val;
 import util.ahp.data.PairwiseComparisonMatrix;
 import util.ahp.exceptions.ConsistencyRatioException;
+import util.ahp.exceptions.IncompleteMatrixException;
 import util.ahp.exceptions.NoAverageCalculatedException;
 
 import java.util.HashMap;
@@ -47,12 +48,19 @@ public class AhpSolver {
      * @throws ConsistencyRatioException exception is thrown when Consistency Ratio is higher than 0.1. User should
      *                                   specify better pairwise comparison matrix.
      */
-    public static Map<String, Double> createRanking(PairwiseComparisonMatrix comparisonMatrix) throws CloneNotSupportedException, NoAverageCalculatedException, ConsistencyRatioException {
+    public static Map<String, Double> createRanking(PairwiseComparisonMatrix comparisonMatrix) throws CloneNotSupportedException, NoAverageCalculatedException, ConsistencyRatioException, IncompleteMatrixException {
+        validateComparisonMatrix(comparisonMatrix);
         PairwiseComparisonMatrix originalComparisonMatrix = (PairwiseComparisonMatrix) comparisonMatrix.clone();
         Map<String, Double> categoriesWeights = calculateRankingForCategories(comparisonMatrix);
         double consistencyRatio = calculateConsistencyRatio(comparisonMatrix, originalComparisonMatrix, categoriesWeights);
         validateConsistencyRatio(consistencyRatio);
         return categoriesWeights;
+    }
+
+    private static void validateComparisonMatrix(PairwiseComparisonMatrix comparisonMatrix) throws IncompleteMatrixException {
+        if (!comparisonMatrix.isMatrixCompleted()) {
+            throw new IncompleteMatrixException();
+        }
     }
 
     private static Map<String, Double> calculateRankingForCategories(PairwiseComparisonMatrix comparisonMatrix) {
