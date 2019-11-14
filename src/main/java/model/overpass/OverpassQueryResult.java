@@ -1,4 +1,4 @@
-package model;
+package model.overpass;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Value;

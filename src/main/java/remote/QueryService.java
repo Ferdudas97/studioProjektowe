@@ -6,8 +6,8 @@ import hu.supercluster.overpasser.library.output.OutputVerbosity;
 import hu.supercluster.overpasser.library.query.OverpassFilterQuery;
 import lombok.AllArgsConstructor;
 import lombok.val;
-import model.Bbox;
-import model.OverpassQueryResult;
+import model.overpass.Bbox;
+import model.overpass.OverpassQueryResult;
 import retrofit2.Response;
 
 import java.io.IOException;

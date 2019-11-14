@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.lang.Boolean.parseBoolean;
+import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 
 @UtilityClass
@@ -41,9 +41,9 @@ public class CsvParser {
         return Profile.builder()
                 .daysToSpend(parseInt(row[DAYS_COLUMN]))
                 .peopleCount(parseInt(row[PEOPLE_COUNT_COLUMN]))
-                .publicTransport(PreferenceWeight.of(parseInt(row[PUBLIC_TRANSPORT_COLUMN])))
-                .usingCar(PreferenceWeight.of(parseBoolean(row[CAR_COLUMN])))
-                .eatingInRestaurants(PreferenceWeight.of(parseInt(row[RESTAURANT_COLUMN])))
+                .publicTransport(PreferenceWeight.of(parseDouble(row[PUBLIC_TRANSPORT_COLUMN]), "public_transport"))
+                .usingCar(PreferenceWeight.of(parseDouble(row[CAR_COLUMN]), "car_transport"))
+                .eatingInRestaurants(PreferenceWeight.of(parseDouble(row[RESTAURANT_COLUMN]), "eating in restaurant"))
                 .build();
     }
 

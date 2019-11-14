@@ -1,4 +1,4 @@
-package model;
+package model.overpass;
 
 import lombok.Builder;
 import lombok.Value;

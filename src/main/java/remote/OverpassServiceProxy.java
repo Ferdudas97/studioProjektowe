@@ -1,7 +1,7 @@
 package remote;
 
 import lombok.AllArgsConstructor;
-import model.OverpassQueryResult;
+import model.overpass.OverpassQueryResult;
 import retrofit2.Call;
 
 @AllArgsConstructor(staticName = "wrap")

@@ -1,7 +1,8 @@
-package model;
+package model.overpass;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Value;
+import model.Tags;
 
 @Value
 public class Node {

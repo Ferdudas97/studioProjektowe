@@ -3,7 +3,7 @@ import de.westnordost.osmapi.map.MapDataDao;
 import hu.supercluster.overpasser.library.query.OverpassFilterQuery;
 import hu.supercluster.overpasser.library.query.OverpassQuery;
 import lombok.val;
-import model.Bbox;
+import model.overpass.Bbox;
 import remote.OverpassServiceProvider;
 import remote.QueryService;
 
