@@ -1,7 +1,6 @@
 package parser;
 
 import lombok.experimental.UtilityClass;
-import model.PreferenceWeight;
 import model.Profile;
 
 import java.io.File;
@@ -10,9 +9,6 @@ import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.lang.Double.parseDouble;
-import static java.lang.Integer.parseInt;
 
 @UtilityClass
 public class CsvParser {
@@ -39,11 +35,11 @@ public class CsvParser {
 
     private Profile parseRow(final String[] row) {
         return Profile.builder()
-                .daysToSpend(parseInt(row[DAYS_COLUMN]))
-                .peopleCount(parseInt(row[PEOPLE_COUNT_COLUMN]))
-                .publicTransport(PreferenceWeight.of(parseDouble(row[PUBLIC_TRANSPORT_COLUMN]), "public_transport"))
-                .usingCar(PreferenceWeight.of(parseDouble(row[CAR_COLUMN]), "car_transport"))
-                .eatingInRestaurants(PreferenceWeight.of(parseDouble(row[RESTAURANT_COLUMN]), "eating in restaurant"))
+//                .daysToSpend(parseInt(row[DAYS_COLUMN]))
+//                .peopleCount(parseInt(row[PEOPLE_COUNT_COLUMN]))
+//                .publicTransport(PreferenceWeight.of(parseDouble(row[PUBLIC_TRANSPORT_COLUMN]), "public_transport"))
+//                .usingCar(PreferenceWeight.of(parseDouble(row[CAR_COLUMN]), "car_transport"))
+//                .eatingInRestaurants(PreferenceWeight.of(parseDouble(row[RESTAURANT_COLUMN]), "eating in restaurant"))
                 .build();
     }
 

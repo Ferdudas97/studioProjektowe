@@ -1,8 +1,13 @@
+import algo.Simulation;
 import de.westnordost.osmapi.OsmConnection;
 import de.westnordost.osmapi.map.MapDataDao;
 import hu.supercluster.overpasser.library.query.OverpassFilterQuery;
 import hu.supercluster.overpasser.library.query.OverpassQuery;
 import lombok.val;
+import model.Category;
+import model.Pair;
+import model.Person;
+import model.Profile;
 import model.overpass.Bbox;
 import remote.OverpassServiceProvider;
 import remote.QueryService;
@@ -26,9 +31,14 @@ public class Main {
 
         val overpass = OverpassServiceProvider.get();
         val queryService = new QueryService(overpass);
-        val result = queryService.execute(cracowBbox, Main::createQuery, 10);
-
-        System.out.println(result);
+        val simulation = Simulation.of(queryService, cracowBbox);
+        val profile = Profile.builder()
+                .category(Pair.of(Category.RESTAURANT, 3))
+                .avgSpendTime(2)
+                .build();
+        val person = Person.of(profile);
+        simulation.simulate(person);
+        System.out.println(person);
     }
 
     private static OverpassFilterQuery createQuery() {

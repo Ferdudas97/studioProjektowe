@@ -7,6 +7,7 @@ import hu.supercluster.overpasser.library.query.OverpassFilterQuery;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import model.overpass.Bbox;
+import model.overpass.Node;
 import model.overpass.OverpassQueryResult;
 import retrofit2.Response;
 
@@ -23,7 +24,7 @@ public class QueryService {
 
     private final OverpassService remoteService;
 
-    public List<OverpassQueryResult> execute(final Bbox bbox, final Supplier<OverpassFilterQuery> querySupplier, final int partNumber) {
+    public List<Node> execute(final Bbox bbox, final Supplier<OverpassFilterQuery> querySupplier, final int partNumber) {
         val deltaLat = bbox.height() / partNumber;
         val deltaLon = bbox.width() / partNumber;
 
@@ -44,6 +45,8 @@ public class QueryService {
                 })
                 .filter(Objects::nonNull)
                 .map(Response::body)
+                .map(OverpassQueryResult::getElements)
+                .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 

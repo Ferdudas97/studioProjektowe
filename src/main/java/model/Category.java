@@ -1,13 +1,12 @@
 package model;
 
 import lombok.AllArgsConstructor;
-
-import java.util.Map;
+import lombok.Getter;
 
 @AllArgsConstructor
-public class Category<CAT> {
+@Getter
+public enum Category {
+    RESTAURANT("restaurant");
+    private String tag;
 
-    private final Map<CAT, PreferenceWeight> categories;
-    private final int prefereneceBonus;
-    private final int averageTime;
 }

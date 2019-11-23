@@ -1,6 +1,7 @@
 package remote;
 
 import lombok.AllArgsConstructor;
+import lombok.val;
 import model.overpass.OverpassQueryResult;
 import retrofit2.Call;
 
@@ -11,6 +12,8 @@ public class OverpassServiceProxy implements OverpassService {
 
     @Override
     public Call<OverpassQueryResult> interpreter(String data) {
-        return service.interpreter(data.replaceAll("\"", ""));
+        val result = data.replaceAll("\"", "");
+        System.out.println(result);
+        return service.interpreter(result);
     }
 }

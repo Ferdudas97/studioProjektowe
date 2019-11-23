@@ -1,8 +1,10 @@
 package model;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Value(staticConstructor = "of")
+@Data
+@AllArgsConstructor(staticName = "of")
 public class Pair<F, S> {
     private F first;
     private S second;
