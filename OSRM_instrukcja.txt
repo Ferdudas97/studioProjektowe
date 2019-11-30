@@ -11,6 +11,6 @@ docker run -t -v "${PWD}:/data" osrm/osrm-backend osrm-customize /data/malopolsk
 
 Aby uruchomić serwer nawigacji wpisz tą komendę:
 
-docker run -t -i -p 5000:5000 -v "${PWD}:/data" osrm/osrm-backend osrm-routed --algoritm mld /data/malopolskie-latest.osrm
+docker run -t -i -p 5000:5000 -v "${PWD}:/data" osrm/osrm-backend osrm-routed --algorithm mld /data/malopolskie-latest.osrm
 
 Serwer uruchomi się na http://localhost:5000/
