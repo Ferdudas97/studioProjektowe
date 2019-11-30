@@ -5,6 +5,7 @@ import lombok.val;
 import model.overpass.Node;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -41,5 +42,9 @@ public class Person {
         val pair = list.get(0);
         return pair.getSecond() >= index ? pair.getFirst() : getCategory(list.subList(0, list.size() - 1), index - pair.getSecond());
 
+    }
+
+    public String printRoad() {
+        return Arrays.toString(road.toArray());
     }
 }

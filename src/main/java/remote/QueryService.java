@@ -45,6 +45,7 @@ public class QueryService {
                 })
                 .filter(Objects::nonNull)
                 .map(Response::body)
+                .filter(Objects::nonNull)
                 .map(OverpassQueryResult::getElements)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());

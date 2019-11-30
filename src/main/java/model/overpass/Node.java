@@ -2,7 +2,8 @@ package model.overpass;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Value;
-import model.Tags;
+
+import java.util.Map;
 
 @Value
 public class Node {
@@ -19,5 +20,5 @@ public class Node {
     private double lon;
 
     @SerializedName("tags")
-    private Tags tags;
+    private Map<String, String> tags;
 }

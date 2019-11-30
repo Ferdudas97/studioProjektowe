@@ -32,20 +32,14 @@ public class Main {
         val overpass = OverpassServiceProvider.get();
         val queryService = new QueryService(overpass);
         val simulation = Simulation.of(queryService, cracowBbox);
-        val profile = Profile.builder()
-                .category(Pair.of(Category.RESTAURANT, 3))
-                .avgSpendTime(2)
-                .build();
+//        val profile = Profile.builder()
+//                .category(Pair.of(Category.RESTAURANT, 3))
+//                .avgSpendTime(2)
+//                .build();
+        val profile = Profile.PredefinedProfiles.MUSEUM_FAN.getProfile();
         val person = Person.of(profile);
         simulation.simulate(person);
         System.out.println(person);
-    }
-
-    private static OverpassFilterQuery createQuery() {
-        return new OverpassQuery().format(JSON)
-                .timeout(100000)
-                .filterQuery()
-                .way()
-                .tag("highway");
+        System.out.println(person.printRoad());
     }
 }

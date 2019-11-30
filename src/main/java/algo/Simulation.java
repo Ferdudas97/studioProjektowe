@@ -36,7 +36,7 @@ public class Simulation {
     }
 
     private void setHotel(final Person person) {
-        val hotels = queryService.execute(simulationArea, () -> getHotel(), 2);
+        val hotels = queryService.execute(simulationArea, this::getHotel, 2);
         val randomIndex = new Random().nextInt(hotels.size());
         person.visit(hotels.get(randomIndex));
     }
@@ -57,8 +57,8 @@ public class Simulation {
 
     private Node placeToGo(final Category category, final List<Node> places) {
         val placesOfSpecifiedCategory = places.stream()
-                .filter(place -> place.getTags().getAmenity() != null)
-                .filter(place -> place.getTags().getAmenity().equals(category.getTag()))
+                .filter(place -> place.getTags().containsKey(category.getTag()))
+                .filter(place -> place.getTags().get(category.getTag()).equals(category.getValue()))
                 .collect(Collectors.toList());
         val randomIndex = new Random().nextInt(placesOfSpecifiedCategory.size());
         return placesOfSpecifiedCategory.get(randomIndex);
@@ -69,8 +69,7 @@ public class Simulation {
         return person.getProfile()
                 .getCategories()
                 .stream()
-                .map(Category::getTag)
-                .map(tag -> queryService.execute(simulationArea, () -> createQuery(tag), 2))
+                .map(category -> queryService.execute(simulationArea, () -> createQuery(category), 2))
                 .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
                 .peek(System.out::println)
@@ -86,12 +85,27 @@ public class Simulation {
                 .tag("tourism", "hotel");
     }
 
+    private OverpassFilterQuery createQuery(final Category category) {
+        if (category.getValue() == null) {
+            return createQuery(category.getTag());
+        }
+        return createQuery(category.getTag(), category.getValue());
+    }
+
     private OverpassFilterQuery createQuery(final String tag) {
         return new OverpassQuery().format(JSON)
                 .timeout(100000)
                 .filterQuery()
                 .node()
                 .amenity(tag);
+    }
+
+    private OverpassFilterQuery createQuery(final String tag, final String value) {
+        return new OverpassQuery().format(JSON)
+                .timeout(100000)
+                .filterQuery()
+                .node()
+                .tag(tag, value);
     }
 
     private boolean isInRadius(final GeoPoint pointA, final GeoPoint pointB, final double radius) {
