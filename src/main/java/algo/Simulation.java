@@ -9,12 +9,11 @@ import model.GeoPoint;
 import model.Person;
 import model.overpass.Bbox;
 import model.overpass.Node;
+import navigation.NavigationService;
+import navigation.model.Step;
 import remote.QueryService;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,6 +22,7 @@ import static hu.supercluster.overpasser.library.output.OutputFormat.JSON;
 @AllArgsConstructor(staticName = "of")
 public class Simulation {
     private QueryService queryService;
+    private NavigationService navigationService;
     private Bbox simulationArea;
     private static final long earthRadius = 6371; //earth radius in kilometers
 
@@ -32,7 +32,37 @@ public class Simulation {
         Stream.iterate(0, i -> i + 1)
                 .limit(person.getNumberOfPlacesToVisit())
                 .forEach(p -> visitNewPlace(person, places));
+        addNavigationPointsToRoad(person);
+    }
 
+    private void addNavigationPointsToRoad(Person person) {
+        if (person.getRoad().size() > 1) {
+            val navRoad = new ArrayList<Node>();
+            navRoad.add(person.getRoad().get(0));
+            for (int i = 0; i < person.getRoad().size() - 1; i++) {
+                val source = person.getRoad().get(i);
+                val destination = person.getRoad().get(i + 1);
+                val steps = navigationService.getStepsInRoute(source.getLat(), source.getLon(), destination.getLat(), destination.getLon());
+                navRoad.addAll(steps.stream()
+                        .map(this::convertStepToNode)
+                        .collect(Collectors.toList()));
+                navRoad.add(destination);
+            }
+            replacePersonRoadWithNavRoad(person, navRoad);
+        }
+    }
+
+    private void replacePersonRoadWithNavRoad(Person person, ArrayList<Node> roadWithNav) {
+        person.getRoad().clear();
+        person.getRoad().addAll(roadWithNav);
+    }
+
+    private Node convertStepToNode(final Step step) {
+        val tags = new HashMap<String, String>() {{
+            put("duration", step.getDeltaSeconds().toString());
+            put("distance", step.getDistance().toString());
+        }};
+        return new Node("navigationNode", 0, step.getLatitude(), step.getLongitude(), tags);
     }
 
     private void setHotel(final Person person) {

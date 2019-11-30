@@ -9,6 +9,7 @@ import model.Pair;
 import model.Person;
 import model.Profile;
 import model.overpass.Bbox;
+import navigation.NavigationServiceProvider;
 import remote.OverpassServiceProvider;
 import remote.QueryService;
 
@@ -31,7 +32,8 @@ public class Main {
 
         val overpass = OverpassServiceProvider.get();
         val queryService = new QueryService(overpass);
-        val simulation = Simulation.of(queryService, cracowBbox);
+        val navigationService = NavigationServiceProvider.get();
+        val simulation = Simulation.of(queryService, navigationService, cracowBbox);
 //        val profile = Profile.builder()
 //                .category(Pair.of(Category.RESTAURANT, 3))
 //                .avgSpendTime(2)

@@ -56,7 +56,6 @@ public class OsrmNavigationService implements NavigationService {
                 .newBuilder();
         urlBuilder.addQueryParameter("alternatives", "false");
         urlBuilder.addQueryParameter("steps", "true");
-        urlBuilder.addQueryParameter("overview", "full");
         return urlBuilder.build().toString();
     }
 }
