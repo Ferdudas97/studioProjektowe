@@ -33,6 +33,20 @@ public class Simulation {
                 .limit(person.getNumberOfPlacesToVisit())
                 .forEach(p -> visitNewPlace(person, places));
         addNavigationPointsToRoad(person);
+        for (Node n:person.getRoad()) {
+            if (!n.getType().equals("navigationNode")){
+                n.getTags().put("duration", Integer.toString(
+                        (int)(3000*person.getProfile().getAvgSpendTime() +
+                                new Random().nextInt(1200)*person.getProfile().getAvgSpendTime())));
+            }
+        }
+        int time = 8*3600;
+        for (Node n:person.getRoad()) {
+            if (!n.getType().equals("navigationNode")){
+                n.getTags().put("time_visited", String.valueOf(time));
+                time = time + Integer.parseInt(n.getTags().get("duration"));
+            }
+        }
     }
 
     private void addNavigationPointsToRoad(Person person) {

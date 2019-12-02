@@ -43,5 +43,6 @@ public class Main {
         simulation.simulate(person);
         System.out.println(person);
         System.out.println(person.printRoad());
+
     }
 }
