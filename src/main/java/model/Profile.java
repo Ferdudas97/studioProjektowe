@@ -21,14 +21,14 @@ public class Profile {
                 .category(Pair.of(Category.CHAPEL, 1))
                 .category(Pair.of(Category.HISTORIC_BUILDING, 2))
                 .category(Pair.of(Category.HISTORIC, 2))
-                .avgSpendTime(2)
+                .avgSpendTime(1)
                 .build()),
         MUSEUM_FAN(Profile.builder()
                 .category(Pair.of(Category.TOURISM_MUSEUM, 5))
                 .category(Pair.of(Category.CULTURE_GALLERY, 3))
                 .category(Pair.of(Category.HISTORIC_CASTLE, 3))
                 .category(Pair.of(Category.HISTORIC_ARCHAEOLOGICAL, 1))
-                .avgSpendTime(2)
+                .avgSpendTime(1)
                 .build()),
         RELIGIOUS(Profile.builder()
                 .category(Pair.of(Category.HISTORIC_TOMB, 5))
@@ -36,7 +36,7 @@ public class Profile {
                 .category(Pair.of(Category.PLACE_OF_WORSHIP, 5))
                 .category(Pair.of(Category.CHAPEL, 4))
                 .category(Pair.of(Category.CAFE, 2))
-                .avgSpendTime(2)
+                .avgSpendTime(1)
                 .build())
         ;
 

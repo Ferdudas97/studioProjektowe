@@ -33,20 +33,45 @@ public class Simulation {
                 .limit(person.getNumberOfPlacesToVisit())
                 .forEach(p -> visitNewPlace(person, places));
         addNavigationPointsToRoad(person);
+        person.getRoad().get(0).getTags().put("duration","0");
         for (Node n:person.getRoad()) {
-            if (!n.getType().equals("navigationNode")){
-                n.getTags().put("duration", Integer.toString(
+            if (!n.getType().equals("navigationNode") && !n.getTags().containsKey("duration")){
+                n.getTags().put("duration", Double.toString(
                         (int)(3000*person.getProfile().getAvgSpendTime() +
                                 new Random().nextInt(1200)*person.getProfile().getAvgSpendTime())));
             }
         }
-        int time = 8*3600;
-        for (Node n:person.getRoad()) {
-            if (!n.getType().equals("navigationNode")){
-                n.getTags().put("time_visited", String.valueOf(time));
-                time = time + Integer.parseInt(n.getTags().get("duration"));
+        double time = 8*3600;
+        for (int i=0;i<person.getRoad().size();i++) {
+            if (time < 22*3600 && person.getRoad().get(i).getTags().containsKey("duration")){
+                time = time + Double.parseDouble(person.getRoad().get(i).getTags().get("duration"));
+                person.getRoad().get(i).getTags().put("time_visited", String.valueOf(time));
+            }
+            else{
+                person.getRoad().remove(i);
+                i--;
             }
         }
+        val source = person.getRoad().get(person.getRoad().size()-1);
+        val destination = new Node(person.getRoad().get(0).getType(),
+                person.getRoad().get(0).getId(),
+                person.getRoad().get(0).getLat(),
+                person.getRoad().get(0).getLon(),
+                person.getRoad().get(0).getTags());
+        destination.getTags().remove("time_visited");
+        val steps = navigationService.getStepsInRoute(source.getLat(), source.getLon(), destination.getLat(), destination.getLon());
+        val navRoad = new ArrayList<Node>(steps.stream()
+                .map(this::convertStepToNode)
+                .collect(Collectors.toList()));
+        navRoad.add(destination);
+        for (Node n:navRoad) {
+            if (!n.getTags().containsKey("time_visited")){
+                time = time + Double.parseDouble(n.getTags().get("duration"));
+                n.getTags().put("time_visited", String.valueOf(time));
+            }
+        }
+
+        person.getRoad().addAll(navRoad);
     }
 
     private void addNavigationPointsToRoad(Person person) {

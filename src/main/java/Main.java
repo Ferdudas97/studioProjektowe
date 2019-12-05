@@ -9,11 +9,13 @@ import model.Pair;
 import model.Person;
 import model.Profile;
 import model.overpass.Bbox;
+import model.overpass.Node;
 import navigation.NavigationServiceProvider;
 import remote.OverpassServiceProvider;
 import remote.QueryService;
 
 import java.io.IOException;
+import java.util.List;
 
 import static hu.supercluster.overpasser.library.output.OutputFormat.JSON;
 
@@ -42,7 +44,6 @@ public class Main {
         val person = Person.of(profile);
         simulation.simulate(person);
         System.out.println(person);
-        System.out.println(person.printRoad());
-
+        person.printRoad();
     }
 }
