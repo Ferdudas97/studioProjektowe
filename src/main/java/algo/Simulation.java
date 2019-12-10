@@ -57,12 +57,12 @@ public class Simulation {
                 person.getRoad().get(0).getId(),
                 person.getRoad().get(0).getLat(),
                 person.getRoad().get(0).getLon(),
-                person.getRoad().get(0).getTags());
+                new HashMap<>(person.getRoad().get(0).getTags()));
         destination.getTags().remove("time_visited");
         val steps = navigationService.getStepsInRoute(source.getLat(), source.getLon(), destination.getLat(), destination.getLon());
-        val navRoad = new ArrayList<Node>(steps.stream()
+        val navRoad = steps.stream()
                 .map(this::convertStepToNode)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toCollection(ArrayList::new));
         navRoad.add(destination);
         for (Node n:navRoad) {
             if (!n.getTags().containsKey("time_visited")){
