@@ -1,9 +1,11 @@
 package algo;
 
+import exception.InvalidProfileException;
 import hu.supercluster.overpasser.library.query.OverpassFilterQuery;
 import hu.supercluster.overpasser.library.query.OverpassQuery;
 import lombok.AllArgsConstructor;
 import lombok.val;
+import lombok.var;
 import model.Category;
 import model.GeoPoint;
 import model.Person;
@@ -26,9 +28,12 @@ public class Simulation {
     private Bbox simulationArea;
     private static final long earthRadius = 6371; //earth radius in kilometers
 
-    public void simulate(final Person person) {
+    public void simulate(final Person person) throws InvalidProfileException {
         setHotel(person);
         val places = getInterestedInPlaces(person);
+        if (places.isEmpty()) {
+            throw new InvalidProfileException("No places were found for such profile. Please specify another profile.");
+        }
         Stream.iterate(0, i -> i + 1)
                 .limit(person.getNumberOfPlacesToVisit())
                 .forEach(p -> visitNewPlace(person, places));
@@ -57,6 +62,7 @@ public class Simulation {
                 person.getRoad().get(0).getId(),
                 person.getRoad().get(0).getLat(),
                 person.getRoad().get(0).getLon(),
+                new HashMap<>(),
                 new HashMap<>(person.getRoad().get(0).getTags()));
         destination.getTags().remove("time_visited");
         val steps = navigationService.getStepsInRoute(source.getLat(), source.getLon(), destination.getLat(), destination.getLon());
@@ -101,18 +107,19 @@ public class Simulation {
             put("duration", step.getDeltaSeconds().toString());
             put("distance", step.getDistance().toString());
         }};
-        return new Node("navigationNode", 0, step.getLatitude(), step.getLongitude(), tags);
+        return new Node("navigationNode", 0, step.getLatitude(), step.getLongitude(), new HashMap<>(), tags);
     }
 
     private void setHotel(final Person person) {
-        val hotels = queryService.execute(simulationArea, this::getHotel, 2);
+        val hotels = queryService.execute(simulationArea, bbox -> getHotel(bbox), 2);
         val randomIndex = new Random().nextInt(hotels.size());
         person.visit(hotels.get(randomIndex));
     }
 
 
     private void visitNewPlace(final Person person, final List<Node> places) {
-        val nearestPlaces = getNearestPlaces(places, person.getLastPosition(), 1);
+        var radius = 3;
+        var nearestPlaces = getNearestPlaces(places, person.getLastPosition(), radius);
         val category = person.getCategoryToGo();
         val nextPlace = placeToGo(category, nearestPlaces);
         person.visit(nextPlace);
@@ -126,8 +133,18 @@ public class Simulation {
 
     private Node placeToGo(final Category category, final List<Node> places) {
         val placesOfSpecifiedCategory = places.stream()
-                .filter(place -> place.getTags().containsKey(category.getTag()))
-                .filter(place -> place.getTags().get(category.getTag()).equals(category.getValue()))
+                .filter(place -> {
+                    if (category.getValue() == null) {
+                        return place.getTags().containsKey("amenity");
+                    }
+                    return place.getTags().containsKey(category.getTag());
+                })
+                .filter(place -> {
+                    if (category.getValue() == null) {
+                        return place.getTags().get("amenity").equals(category.getTag());
+                    }
+                    return place.getTags().get(category.getTag()).equals(category.getValue());
+                })
                 .collect(Collectors.toList());
         val randomIndex = new Random().nextInt(placesOfSpecifiedCategory.size());
         return placesOfSpecifiedCategory.get(randomIndex);
@@ -138,7 +155,7 @@ public class Simulation {
         return person.getProfile()
                 .getCategories()
                 .stream()
-                .map(category -> queryService.execute(simulationArea, () -> createQuery(category), 2))
+                .map(category -> queryService.execute(simulationArea, bbox -> createQuery(category, bbox), 2))
                 .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
                 .peek(System.out::println)
@@ -146,35 +163,46 @@ public class Simulation {
     }
 
 
-    private OverpassFilterQuery getHotel() {
+    private OverpassFilterQuery getHotel(Bbox bbox) {
         return new OverpassQuery().format(JSON)
                 .timeout(100000)
                 .filterQuery()
                 .node()
-                .tag("tourism", "hotel");
+                .tag("tourism", "hotel")
+                .boundingBox(bbox.getSouthernLat(), bbox.getWesternLon(), bbox.getNorthernLat(), bbox.getEasternLon());
     }
 
-    private OverpassFilterQuery createQuery(final Category category) {
+    private OverpassFilterQuery createQuery(final Category category, Bbox bbox) {
         if (category.getValue() == null) {
-            return createQuery(category.getTag());
+            return createQuery(category.getTag(), bbox);
         }
-        return createQuery(category.getTag(), category.getValue());
+        return createQuery(category.getTag(), category.getValue(), bbox);
     }
 
-    private OverpassFilterQuery createQuery(final String tag) {
+    private OverpassFilterQuery createQuery(final String tag, Bbox bbox) {
         return new OverpassQuery().format(JSON)
                 .timeout(100000)
                 .filterQuery()
                 .node()
-                .amenity(tag);
+                .amenity(tag)
+                .boundingBox(bbox.getSouthernLat(), bbox.getWesternLon(), bbox.getNorthernLat(), bbox.getEasternLon());
     }
 
-    private OverpassFilterQuery createQuery(final String tag, final String value) {
+    private OverpassFilterQuery createQuery(final String tag, final String value, Bbox bbox) {
         return new OverpassQuery().format(JSON)
                 .timeout(100000)
                 .filterQuery()
                 .node()
-                .tag(tag, value);
+                .tag(tag, value)
+                .boundingBox(bbox.getSouthernLat(), bbox.getWesternLon(), bbox.getNorthernLat(), bbox.getEasternLon())
+                .prepareNext()
+                .rel()
+                .tag(tag,value)
+                .boundingBox(bbox.getSouthernLat(), bbox.getWesternLon(), bbox.getNorthernLat(), bbox.getEasternLon())
+                .prepareNext()
+                .way()
+                .tag(tag, value)
+                .boundingBox(bbox.getSouthernLat(), bbox.getWesternLon(), bbox.getNorthernLat(), bbox.getEasternLon());
     }
 
     private boolean isInRadius(final GeoPoint pointA, final GeoPoint pointB, final double radius) {

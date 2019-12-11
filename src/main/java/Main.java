@@ -1,23 +1,16 @@
 import algo.Simulation;
 import de.westnordost.osmapi.OsmConnection;
 import de.westnordost.osmapi.map.MapDataDao;
-import hu.supercluster.overpasser.library.query.OverpassFilterQuery;
-import hu.supercluster.overpasser.library.query.OverpassQuery;
+import exception.InvalidProfileException;
 import lombok.val;
-import model.Category;
-import model.Pair;
 import model.Person;
 import model.Profile;
 import model.overpass.Bbox;
-import model.overpass.Node;
 import navigation.NavigationServiceProvider;
 import remote.OverpassServiceProvider;
 import remote.QueryService;
 
 import java.io.IOException;
-import java.util.List;
-
-import static hu.supercluster.overpasser.library.output.OutputFormat.JSON;
 
 public class Main {
 
@@ -42,8 +35,13 @@ public class Main {
 //                .build();
         val profile = Profile.PredefinedProfiles.MUSEUM_FAN.getProfile();
         val person = Person.of(profile);
-        simulation.simulate(person);
-        System.out.println(person);
-        person.printRoad();
+        try {
+            simulation.simulate(person);
+            System.out.println(person);
+            person.printRoad();
+        } catch (InvalidProfileException e) {
+            System.err.println(e.getMessage());
+        }
+
     }
 }

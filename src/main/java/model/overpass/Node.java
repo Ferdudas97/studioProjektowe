@@ -19,6 +19,9 @@ public class Node {
     @SerializedName("lon")
     private double lon;
 
+    @SerializedName("center")
+    private Map<String, Double> centerLatLong;
+
     @SerializedName("tags")
     private Map<String, String> tags;
 }

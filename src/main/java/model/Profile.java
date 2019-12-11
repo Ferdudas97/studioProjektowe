@@ -37,6 +37,37 @@ public class Profile {
                 .category(Pair.of(Category.CHAPEL, 4))
                 .category(Pair.of(Category.CAFE, 2))
                 .avgSpendTime(1)
+                .build()),
+        FULL_CULTURE(Profile.builder()
+                .category(Pair.of(Category.CULTURE_GALLERY, 2))
+                .category(Pair.of(Category.CULTURE_THEATRE, 2))
+                .category(Pair.of(Category.TOURISM_MUSEUM, 2))
+                .category(Pair.of(Category.RESTAURANT, 2))
+                .avgSpendTime(1)
+                .build()),
+        YEASTER(Profile.builder()
+                .category(Pair.of(Category.BAR, 3))
+                .category(Pair.of(Category.PUB, 3))
+                .category(Pair.of(Category.BIERGARTEN, 3))
+                .avgSpendTime(2)
+                .build()),
+        ANTYTEIST(Profile.builder()
+                .category(Pair.of(Category.drawCategoryWithExclusion(Category.RELIGION, Category.PLACE_OF_WORSHIP, Category.LANDUSE_RELIGIOUS), 2))
+                .category(Pair.of(Category.drawCategoryWithExclusion(Category.RELIGION, Category.PLACE_OF_WORSHIP, Category.LANDUSE_RELIGIOUS), 1))
+                .category(Pair.of(Category.drawCategoryWithExclusion(Category.RELIGION, Category.PLACE_OF_WORSHIP, Category.LANDUSE_RELIGIOUS), 1))
+                .avgSpendTime(1)
+                .build()),
+        ONLY_CULTURE(Profile.builder()
+                .category(Pair.of(Category.drawCategoryWithExclusion(Category.RELIGION, Category.PLACE_OF_WORSHIP,
+                        Category.LANDUSE_RELIGIOUS, Category.HISTORIC, Category.HISTORIC_ARCHAEOLOGICAL,
+                        Category.HISTORIC_BUILDING, Category.HISTORIC_CASTLE, Category.HISTORIC_TOMB), 3))
+                .category(Pair.of(Category.drawCategoryWithExclusion(Category.RELIGION, Category.PLACE_OF_WORSHIP,
+                        Category.LANDUSE_RELIGIOUS, Category.HISTORIC, Category.HISTORIC_ARCHAEOLOGICAL,
+                        Category.HISTORIC_BUILDING, Category.HISTORIC_CASTLE, Category.HISTORIC_TOMB), 2))
+                .category(Pair.of(Category.drawCategoryWithExclusion(Category.RELIGION, Category.PLACE_OF_WORSHIP,
+                        Category.LANDUSE_RELIGIOUS, Category.HISTORIC, Category.HISTORIC_ARCHAEOLOGICAL,
+                        Category.HISTORIC_BUILDING, Category.HISTORIC_CASTLE, Category.HISTORIC_TOMB), 1))
+                .avgSpendTime(2)
                 .build())
         ;
 
