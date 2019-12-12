@@ -111,7 +111,7 @@ public class Simulation {
     }
 
     private void setHotel(final Person person) {
-        val hotels = queryService.execute(simulationArea, bbox -> getHotel(bbox), 2);
+        val hotels = queryService.execute(simulationArea, this::getHotel, 2);
         val randomIndex = new Random().nextInt(hotels.size());
         person.visit(hotels.get(randomIndex));
     }
@@ -146,6 +146,9 @@ public class Simulation {
                     return place.getTags().get(category.getTag()).equals(category.getValue());
                 })
                 .collect(Collectors.toList());
+        if (placesOfSpecifiedCategory.isEmpty()) {
+            return places.get(new Random().nextInt(places.size()));
+        }
         val randomIndex = new Random().nextInt(placesOfSpecifiedCategory.size());
         return placesOfSpecifiedCategory.get(randomIndex);
     }

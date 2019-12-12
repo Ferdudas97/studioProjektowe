@@ -15,7 +15,7 @@ import remote.OverpassService;
 import remote.OverpassServiceProvider;
 import remote.QueryService;
 
-public class CategoriesTest {
+public class IntegrationTest {
 
     private Simulation simulation;
 
@@ -49,6 +49,21 @@ public class CategoriesTest {
                 simulation.simulate(person);
                 System.out.println("[   TEST   ] Got person: " + person.getRoad());
                 assert person.getRoad().stream().filter(n -> !n.getType().equals("navigationNode")).count() >= 2;
+            } catch (InvalidProfileException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+    }
+
+    @Test
+    public void testAllProfiles() {
+        Profile.PredefinedProfiles[] predefinedProfiles = Profile.PredefinedProfiles.values();
+        for (Profile.PredefinedProfiles p : predefinedProfiles) {
+            try {
+                System.out.println("[   TEST   ] Testing profile: " + p.name());
+                Person pe = Person.of(p.getProfile());
+                simulation.simulate(pe);
+                assert !pe.getRoad().isEmpty();
             } catch (InvalidProfileException e) {
                 System.err.println(e.getMessage());
             }
