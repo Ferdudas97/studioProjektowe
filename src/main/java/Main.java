@@ -38,7 +38,7 @@ public class Main {
         try {
             simulation.simulate(person);
             System.out.println(person);
-            person.printRoad();
+            person.printRoadCsv();
         } catch (InvalidProfileException e) {
             System.err.println(e.getMessage());
         }

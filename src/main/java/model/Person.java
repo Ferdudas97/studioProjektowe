@@ -4,10 +4,7 @@ import lombok.Value;
 import lombok.val;
 import model.overpass.Node;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Value(staticConstructor = "of")
 public class Person {
@@ -44,13 +41,26 @@ public class Person {
 
     }
 
-    public void printRoad() {
+    public void printRoadCsv() {
         //return Arrays.toString(road.toArray());
         for (Node n:road) {
-            System.out.println((!n.getType().equals("navigationNode") ? "point" : "road") +";"+n.getLat()+";"+n.getLon()+";"+
-                    String.format("%02d", (int)Double.parseDouble(n.getTags().get("time_visited"))/3600)+":"+
-                    String.format("%02d", (int)(Double.parseDouble(n.getTags().get("time_visited"))%3600)/60)+":"+
-                    String.format("%02d", (int)Double.parseDouble(n.getTags().get("time_visited"))%60));
+            System.out.println(nodeToCsvFormat(n));
         }
+    }
+
+    private String nodeToCsvFormat(Node n) {
+        return (!n.getType().equals("navigationNode") ? "point" : "road") +";"+n.getLat()+";"+n.getLon()+";"+
+                String.format("%02d", (int)Double.parseDouble(n.getTags().get("time_visited"))/3600)+":"+
+                String.format("%02d", (int)(Double.parseDouble(n.getTags().get("time_visited"))%3600)/60)+":"+
+                String.format("%02d", (int)Double.parseDouble(n.getTags().get("time_visited"))%60) + ";" +
+                getNodeTagsInKeyValueFormat(n.getTags());
+    }
+
+    private String getNodeTagsInKeyValueFormat(Map<String, String> tags) {
+        StringBuilder res = new StringBuilder();
+        for (val tag : tags.entrySet()) {
+            res.append(tag.getKey()).append("=").append(tag.getValue()).append(",");
+        }
+        return res.substring(0, res.length() - 1);
     }
 }
