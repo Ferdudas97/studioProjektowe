@@ -47,7 +47,7 @@ public class Person {
     public void printRoad() {
         //return Arrays.toString(road.toArray());
         for (Node n:road) {
-            System.out.println(n.getLat()+";"+n.getLon()+";"+
+            System.out.println((!n.getType().equals("navigationNode") ? "point" : "road") +";"+n.getLat()+";"+n.getLon()+";"+
                     String.format("%02d", (int)Double.parseDouble(n.getTags().get("time_visited"))/3600)+":"+
                     String.format("%02d", (int)(Double.parseDouble(n.getTags().get("time_visited"))%3600)/60)+":"+
                     String.format("%02d", (int)Double.parseDouble(n.getTags().get("time_visited"))%60));
