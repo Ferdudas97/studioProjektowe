@@ -10,6 +10,8 @@ import navigation.NavigationServiceProvider;
 import remote.OverpassServiceProvider;
 import remote.QueryService;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class Main {
@@ -39,6 +41,14 @@ public class Main {
             simulation.simulate(person);
             System.out.println(person);
             person.printRoadCsv();
+
+            if (args.length == 2 && args[0].equals("-o")) {
+                val outputName = args[1];
+                val outputFile = new BufferedWriter(new FileWriter(outputName));
+                outputFile.write(person.getRoadCsv());
+                outputFile.close();
+            }
+
         } catch (InvalidProfileException e) {
             System.err.println(e.getMessage());
         }

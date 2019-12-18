@@ -48,6 +48,17 @@ public class Person {
         }
     }
 
+    public String getRoadCsv() {
+        StringBuilder out = new StringBuilder();
+        for (Node n : road) {
+            out.append(nodeToCsvFormat(n));
+            if (road.indexOf(n) != road.size() - 1) {
+                out.append("\n");
+            }
+        }
+        return out.toString();
+    }
+
     private String nodeToCsvFormat(Node n) {
         return (!n.getType().equals("navigationNode") ? "point" : "road") +";"+n.getLat()+";"+n.getLon()+";"+
                 String.format("%02d", (int)Double.parseDouble(n.getTags().get("time_visited"))/3600)+":"+
